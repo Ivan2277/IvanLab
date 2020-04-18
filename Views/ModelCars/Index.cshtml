@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CarsLab.ModelCar>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<p>
+    <a asp-action="Create">Створити нову модель</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ModelName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdBodyNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdEngineNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdPriceNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModelName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdBodyNavigation.TypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdEngineNavigation.EngineCapacity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPriceNavigation.Price)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Роки випуску моделі</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

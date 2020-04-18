@@ -1,0 +1,61 @@
+﻿@model IEnumerable<CarsLab.Engine>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EngineCapacity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EngineCapacity)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Список авто</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="container">
+    <div id="chart1"> </div>
+</div>
+@section Scripts
+    {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+                google.charts.load('current', { 'packages': ['corechart'], callback: drawChart })
+
+                function drawChart() {
+                    $.get('api/Charts/JsonData1', function (JsonData1) {
+                        data = google.visualization.arrayToDataTable(JsonData1, false);
+                        var option =
+                        {
+                            title: "Кількость авто по об'ємах двигуна",
+                            width: 500,
+                            height: 400
+                        };
+                        chart = new google.visualization.PieChart(document.getElementById('chart1'));
+                        chart.draw(data, option);
+                    })
+                }
+
+    </script>
+
+}
