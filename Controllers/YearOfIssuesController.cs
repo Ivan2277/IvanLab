@@ -139,6 +139,9 @@ namespace CarsLab.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+           var carB = _context.ModelCarYear.Where(d => d.IdYear == id).Include(d => d.IdCarNavigation).Include(d => d.IdYearNavigation).ToList();
+             _context.ModelCarYear.RemoveRange(carB);
+            await _context.SaveChangesAsync();
             var yearOfIssue = await _context.YearOfIssue.FindAsync(id);
             _context.YearOfIssue.Remove(yearOfIssue);
             await _context.SaveChangesAsync();

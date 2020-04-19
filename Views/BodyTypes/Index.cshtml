@@ -8,6 +8,20 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<div>
+    <h3>Select Excel-file for download</h3>
+    @using (Html.BeginForm("Import", "BodyTypes", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Download Excel-file:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Download" />
+            </div>
+        </div>
+    }
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -27,6 +41,7 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Список авто</a> |
+                    <a asp-action="Export" asp-route-id="@item.Id">Завантажити у файл Excel</a>
                     <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
                 </td>
             </tr>

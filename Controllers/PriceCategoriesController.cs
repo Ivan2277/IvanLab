@@ -18,6 +18,20 @@ namespace CarsLab.Controllers
             _context = context;
         }
 
+        public JsonResult CheckRange(string Price)
+        {
+            var result = true;
+            if (Price.Contains('-'))
+            {
+                string[] tokens = Price.Split("-", StringSplitOptions.None);
+                int a = Int32.Parse(tokens[0]);
+                string[] b = tokens[1].Split('$', StringSplitOptions.None);
+                int b1 = Int32.Parse(b[0]);
+                if (a >= b1) result = false;
+                return Json(result);
+            }
+            return Json(result);
+        }
         // GET: PriceCategories
         public async Task<IActionResult> Index()
         {
@@ -139,6 +153,15 @@ namespace CarsLab.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var cars = _context.ModelCar.Where(c => c.IdPrice == id).Include(c => c.IdBodyNavigation).Include(c => c.IdEngineNavigation).Include(c => c.IdPriceNavigation).ToList();
+            foreach (var c in cars)
+            {
+                var carB = _context.ModelCarYear.Where(d => d.IdCar == c.Id).Include(d => d.IdCarNavigation).Include(d => d.IdYearNavigation).ToList();
+                _context.ModelCarYear.RemoveRange(carB);
+                await _context.SaveChangesAsync();
+            }
+            _context.ModelCar.RemoveRange(cars);
+            await _context.SaveChangesAsync();
             var priceCategory = await _context.PriceCategory.FindAsync(id);
             _context.PriceCategory.Remove(priceCategory);
             await _context.SaveChangesAsync();

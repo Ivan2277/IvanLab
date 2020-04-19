@@ -8,6 +8,19 @@
 <p>
     <a asp-action="Create">Створити нову модель</a>
 </p>
+<div>
+    <h3>Select Excel-file for download</h3>
+    @using (Html.BeginForm("Import", "BodyTypes", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Download Excel-file:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Download" />
+            </div>
+        </div>
+    }
+</div>
 <table class="table">
     <thead>
         <tr>
