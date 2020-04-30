@@ -1,40 +1,62 @@
 ﻿@model IEnumerable<CarsLab.ModelCarYear>
-
+@using System.Security.Claims;
 @{
     ViewData["Title"] = "Index";
 }
 
+@if (User.Identity.IsAuthenticated)
+{
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+    var customUserClaim = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == "customType") : null;
+    var customTypeValue = customUserClaim != null ? customUserClaim.Value : User.Identity.Name;
+    var roleOfUser = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value : "User";
+    @if (roleOfUser == "admin")
+    {
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCarNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdYearNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCarNavigation.ModelName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdYearNavigation.Year)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Про авто</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
-            </td>
-        </tr>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    }
 }
-    </tbody>
-</table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdCarNavigation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdYearNavigation)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdCarNavigation.ModelName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdYearNavigation.Year)
+                    </td>
+                    <td>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+                            var customUserClaim = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == "customType") : null;
+                            var customTypeValue = customUserClaim != null ? customUserClaim.Value : User.Identity.Name;
+                            var roleOfUser = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value : "User";
+                            @if (roleOfUser == "admin")
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати|</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id">Видалити|</a>
+                            }
+                        }
+                            <a asp-action="Details" asp-route-id="@item.Id">Про авто|</a>
+
+                        </td>
+                </tr>
+            }
+        </tbody>
+    </table>

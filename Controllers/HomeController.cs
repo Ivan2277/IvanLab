@@ -47,6 +47,20 @@ namespace CarsLab.Controllers
             return View();
         }
 
+        public IActionResult Users()
+        {
+            return RedirectToAction("Index", "Users");
+        }
+
+        public IActionResult ADMIN()
+        {
+            return View();
+        }
+
+        public IActionResult Roles()
+        {
+            return RedirectToAction("Index", "Roles");
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

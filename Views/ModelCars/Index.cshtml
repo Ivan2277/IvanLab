@@ -1,65 +1,86 @@
 ﻿@model IEnumerable<CarsLab.ModelCar>
-
+@using System.Security.Claims;
 @{
     ViewData["Title"] = "Index";
 }
-
-
-<p>
-    <a asp-action="Create">Створити нову модель</a>
-</p>
-<div>
-    <h3>Select Excel-file for download</h3>
-    @using (Html.BeginForm("Import", "BodyTypes", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+@if (User.Identity.IsAuthenticated)
+{
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+    var customUserClaim = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == "customType") : null;
+    var customTypeValue = customUserClaim != null ? customUserClaim.Value : User.Identity.Name;
+    var roleOfUser = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value : "User";
+    @if (roleOfUser == "admin")
     {
-        <div>
-            Download Excel-file:
-            <input type="file" name="fileExcel" id="fileExcel" />
-            <div>
-                <input type="submit" value="Download" />
-            </div>
-        </div>
+
+        <p>
+            <a asp-action="Create">Створити нову модель</a>
+        </p>
     }
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ModelName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdBodyNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdEngineNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdPriceNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModelName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdBodyNavigation.TypeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdEngineNavigation.EngineCapacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdPriceNavigation.Price)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Роки випуску моделі</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
-            </td>
-        </tr>
 }
-    </tbody>
-</table>
+        <div>
+            <h3>Select Excel-file for download</h3>
+            @using (Html.BeginForm("Import", "BodyTypes", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+            {
+                <div>
+                    Download Excel-file:
+                    <input type="file" name="fileExcel" id="fileExcel" />
+                    <div>
+                        <input type="submit" value="Download" />
+                    </div>
+                </div>
+            }
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ModelName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IdBodyNavigation)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IdEngineNavigation)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IdPriceNavigation)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ModelName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdBodyNavigation.TypeName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdEngineNavigation.EngineCapacity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdPriceNavigation.Price)
+                        </td>
+                        <td>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+                                var customUserClaim = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == "customType") : null;
+                                var customTypeValue = customUserClaim != null ? customUserClaim.Value : User.Identity.Name;
+                                var roleOfUser = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value : "User";
+                                @if (roleOfUser == "admin") 
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати|</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                                }
+                            }
+                            <a asp-action="Details" asp-route-id="@item.Id">Роки випуску моделі|</a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>

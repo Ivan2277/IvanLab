@@ -57,7 +57,7 @@ namespace CarsLab.Controllers
                     {
                         BodyType bodyType;
                         var g = (from type in _context.BodyType
-                                 where type.TypeName.Contains(worksheet.Name)
+                                 where type.TypeName==worksheet.Name
                                  select type).ToList();
                         if (g.Count > 0)
                         {
@@ -78,7 +78,7 @@ namespace CarsLab.Controllers
                             ModelCar carModel = new ModelCar();
                             string name = row.Cell(1).Value.ToString();
                             if (name.Length > 50 || name.Length < 3) continue;
-                            var f = (from car in _context.ModelCar where car.ModelName.Contains(name) select car).ToList();
+                            var f = (from car in _context.ModelCar where car.ModelName==name select car).ToList();
                             if (f.Count() > 0)
                             {
                                 carModel = f[0]; 
@@ -95,7 +95,7 @@ namespace CarsLab.Controllers
                                 if(CheckRange(name1)==false)continue;
                                 PriceCategory price;
                                 var a = (from pr in _context.PriceCategory
-                                         where pr.Price.Contains(row.Cell(2).Value.ToString())
+                                         where pr.Price==row.Cell(2).Value.ToString()
                                          select pr).ToList();
                                 if (a.Count() > 0)
                                 {
@@ -117,7 +117,7 @@ namespace CarsLab.Controllers
                                 if (name2.Length > 50 || name2.Length < 3) continue;
                                 Engine eng;
                                 var b = (from pr in _context.Engine
-                                         where pr.EngineCapacity.Contains(row.Cell(3).Value.ToString())
+                                         where pr.EngineCapacity==row.Cell(3).Value.ToString()
                                          select pr).ToList();
                                 if (b.Count() > 0)
                                 {

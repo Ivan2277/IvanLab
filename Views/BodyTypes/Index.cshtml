@@ -1,53 +1,75 @@
 ﻿@model IEnumerable<CarsLab.BodyType>
-
+@using System.Security.Claims;
 @{
     ViewData["Title"] = "Index";
 }
 
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
-<div>
-    <h3>Select Excel-file for download</h3>
-    @using (Html.BeginForm("Import", "BodyTypes", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+@if (User.Identity.IsAuthenticated)
+{
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+    var customUserClaim = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == "customType") : null;
+    var customTypeValue = customUserClaim != null ? customUserClaim.Value : User.Identity.Name;
+    var roleOfUser = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value : "User";
+    @if (roleOfUser == "admin")
     {
-        <div>
-            Download Excel-file:
-            <input type="file" name="fileExcel" id="fileExcel" />
-            <div>
-                <input type="submit" value="Download" />
-            </div>
-        </div>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
     }
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TypeName)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+}
+    <div>
+        <h3>Select Excel-file for download</h3>
+        @using (Html.BeginForm("Import", "BodyTypes", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TypeName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Список авто</a> |
-                    <a asp-action="Export" asp-route-id="@item.Id">Завантажити у файл Excel</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
-                </td>
-            </tr>
+            <div>
+                Download Excel-file:
+                <input type="file" name="fileExcel" id="fileExcel" />
+                <div>
+                    <input type="submit" value="Download" />
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.TypeName)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TypeName)
+                    </td>
+                    <td>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+                            var customUserClaim = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == "customType") : null;
+                            var customTypeValue = customUserClaim != null ? customUserClaim.Value : User.Identity.Name;
+                            var roleOfUser = claimsIdentity != null ? claimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value : "User";
+                            @if (roleOfUser == "admin")
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id">Видалити|</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a>
+                            }
+                        }
+                            <a asp-action="Details" asp-route-id="@item.Id">Список авто</a> 
+                            <a asp-action = "Export" asp-route-id = "@item.Id" > Завантажити у файл Excel </a>
+
+
+</td >
+
+</tr >
+}
+</tbody>
+    </table>
+}
 <div class="container">
     <div id="chart1"> </div>
 </div>
@@ -55,21 +77,21 @@
     {
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
-                google.charts.load('current', { 'packages': ['corechart'], callback: drawChart })
+        google.charts.load('current', { 'packages': ['corechart'], callback: drawChart })
 
-                function drawChart() {
-                    $.get('api/Charts/JsonData', function (JsonData) {
-                        data = google.visualization.arrayToDataTable(JsonData, false);
-                        var option =
-                        {
-                            title: "Кількость авто по типах кузова",
-                            width: 500,
-                            height: 400
-                        };
-                        chart = new google.visualization.PieChart(document.getElementById('chart1'));
-                        chart.draw(data, option);
-                    })
-                }
+        function drawChart() {
+            $.get('api/Charts/JsonData', function (JsonData) {
+                data = google.visualization.arrayToDataTable(JsonData, false);
+                var option =
+                {
+                    title: "Кількость авто по типах кузова",
+                    width: 500,
+                    height: 400
+                };
+                chart = new google.visualization.PieChart(document.getElementById('chart1'));
+                chart.draw(data, option);
+            })
+        }
 
     </script>
 
